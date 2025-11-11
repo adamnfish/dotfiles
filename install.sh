@@ -1,4 +1,2 @@
-echo "\n\nShell extras from adamnfish/dotfiles\n\n" >> .zprofile
-
-cat shell_extras.sh >> ~/.zprofile
-cat shell_extras.sh >> ~/.bashrc
+echo "\n\nShell extras from adamnfish/dotfiles\n\n" >> .bash_aliases
+cat shell_extras.sh >> ~/.bash_aliases
