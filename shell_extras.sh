@@ -1,4 +1,9 @@
-export EDITOR=nano
+
+if command -v emacs &>/dev/null; then
+  export EDITOR=emacs
+else
+  export EDITOR=nano
+fi
 
 export LESS='-R'
 

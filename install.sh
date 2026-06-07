@@ -4,10 +4,11 @@
 # install tools
 ###
 
-# Liquid Prompt
 if command -v apt-get &>/dev/null; then
   apt-get update -q
-  apt-get install -y -q liquidprompt
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
+
+  cp -r .emacs.d ~/
 else
   printf "Warning: apt-get not available, skipping liquidprompt installation.\n" >&2
 fi
