@@ -72,9 +72,9 @@ if ! command -v docker &>/dev/null; then
   exit 1
 fi
 
-printf "Image:  %s\n" "$IMAGE"
-printf "Mode:   %s\n" "$MODE"
-printf "Branch: %s\n\n" "${BRANCH:-(default)}"
+printf "\033[36mImage:\033[0m  %s\n" "$IMAGE"
+printf "\033[36mMode:\033[0m   %s\n" "$MODE"
+printf "\033[36mBranch:\033[0m %s\n\n" "${BRANCH:-(default)}"
 
 case "$MODE" in
   manual)
@@ -94,7 +94,7 @@ case "$MODE" in
         && exec bash"
     ;;
   auto)
-    printf "Running automated checks...\n"
+    printf "\033[1mInstalling dotfiles...\033[0m\n"
     # Pass the repo URL as an environment variable so the single-quoted heredoc
     # (which prevents outer-shell expansion) can still reference it inside the container.
     docker run --rm -i \
@@ -131,15 +131,15 @@ check() {
   local desc="$1"
   local result="$2"
   if [[ "$result" == "pass" ]]; then
-    printf "  PASS: %s\n" "$desc"
+    printf "  \033[32mPASS\033[0m: %s\n" "$desc"
     PASS=$((PASS + 1))
   else
-    printf "  FAIL: %s\n" "$desc"
+    printf "  \033[31mFAIL\033[0m: %s\n" "$desc"
     FAIL=$((FAIL + 1))
   fi
 }
 
-printf "\nRunning checks...\n"
+printf "\n\033[1mRunning checks...\033[0m\n"
 
 if [[ -f ~/.bash_aliases ]]; then
   check ".bash_aliases exists" "pass"
@@ -179,7 +179,11 @@ else
   check "emacs config is installed" "fail"
 fi
 
-printf "\nResults: %d passed, %d failed\n" "$PASS" "$FAIL"
+if [[ $FAIL -gt 0 ]]; then
+  printf "\n\033[1;31mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
+else
+  printf "\n\033[1;32mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
+fi
 [[ $FAIL -eq 0 ]]
 SCRIPT
     ;;
