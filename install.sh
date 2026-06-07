@@ -5,10 +5,13 @@
 ###
 
 # Liquid Prompt
-mkdir -p ~/.liquidprompt
-curl -o ~/.liquidprompt/liquidprompt https://github.com/liquidprompt/liquidprompt/releases/download/v2.2.1/liquidprompt
-# Only load Liquid Prompt in interactive shells, not from a script or from scp
-[[ $- = *i* ]] && source ~/.liquidprompt/liquidprompt
+if command -v apt-get &>/dev/null; then
+  apt-get update -q
+  apt-get install -y -q liquidprompt
+else
+  printf "Warning: apt-get not available, skipping liquidprompt installation.\n" >&2
+fi
+
 
 ###
 # Enable tools and set up aliases

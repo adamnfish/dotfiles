@@ -53,3 +53,7 @@ function cu {
 	cd `yes "../" |head -n$1 | perl -ne 'chomp and print'`
   fi
 }
+
+# Only load Liquid Prompt in interactive shells, not from a script or from scp
+# Also check that the file exists, since it may not be installed on non-apt distros
+[[ $- = *i* ]] && [[ -f /usr/share/liquidprompt/liquidprompt ]] && source /usr/share/liquidprompt/liquidprompt
