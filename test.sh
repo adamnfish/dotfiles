@@ -82,6 +82,7 @@ case "$MODE" in
     # install.sh uses a relative path on its first line (>> .bash_aliases), so it must be
     # invoked from the home directory for that path to resolve to ~/.bash_aliases correctly.
     docker run --rm -it \
+      -e "DEBIAN_FRONTEND=noninteractive" \
       "$IMAGE" \
       bash -c "cd ~ \
         && apt-get update -q \
@@ -97,18 +98,26 @@ case "$MODE" in
     # Pass the repo URL as an environment variable so the single-quoted heredoc
     # (which prevents outer-shell expansion) can still reference it inside the container.
     docker run --rm -i \
+      -e "DEBIAN_FRONTEND=noninteractive" \
       -e "DOTFILES_REPO=${REPO_URL}" \
       -e "DOTFILES_BRANCH=${BRANCH}" \
       "$IMAGE" \
       bash -s <<'SCRIPT'
 set -euo pipefail
 cd ~
-apt-get update -q
-apt-get install -y -q git
-git clone ${DOTFILES_BRANCH:+--branch "$DOTFILES_BRANCH" }"$DOTFILES_REPO" dotfiles
-pushd dotfiles
-bash install.sh
-popd
+# Redirect stdout to /dev/null during setup to keep check output readable.
+# Errors (stderr) are still forwarded so failures remain visible.
+printf "  apt-get update...\n" >&2
+apt-get update -q >/dev/null
+printf "  apt-get install git...\n" >&2
+apt-get install -y -q git >/dev/null
+printf "  cloning dotfiles...\n" >&2
+git clone -q ${DOTFILES_BRANCH:+--branch "$DOTFILES_BRANCH" }"$DOTFILES_REPO" dotfiles
+printf "  running install.sh...\n" >&2
+pushd dotfiles >/dev/null
+bash install.sh >/dev/null
+popd >/dev/null
+printf "  setup complete.\n" >&2
 
 # Non-interactive bash neither sources ~/.bash_aliases nor enables alias processing.
 # Both are required: shopt enables the alias table, source loads the definitions.
@@ -151,6 +160,24 @@ for name in la ll gatus hex2rgb cu gog; do
     check "$name is available" "fail"
   fi
 done
+
+if type emacs &>/dev/null; then
+  check "emacs is available" "pass"
+else
+  check "emacs is available" "fail"
+fi
+
+if [[ -f /usr/share/liquidprompt/liquidprompt ]]; then
+  check "liquidprompt is installed" "pass"
+else
+  check "liquidprompt is installed" "fail"
+fi
+
+if [[ -f ~/.emacs.d/init.el ]]; then
+  check "emacs config is installed" "pass"
+else
+  check "emacs config is installed" "fail"
+fi
 
 printf "\nResults: %d passed, %d failed\n" "$PASS" "$FAIL"
 [[ $FAIL -eq 0 ]]

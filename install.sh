@@ -6,7 +6,7 @@
 
 if command -v apt-get &>/dev/null; then
   apt-get update -q
-  DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
+  apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
 
   cp -r .emacs.d ~/
 else
