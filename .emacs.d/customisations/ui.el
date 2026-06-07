@@ -18,18 +18,19 @@
 ;; 1. Enable line numbers globally
 (global-display-line-numbers-mode t)
 
-;; 2. Customize the appearance
-(custom-set-faces
- ;; The "Faint" style for most line numbers
- '(line-number ((t (:foreground "#5c6370"    ; Dark slate gray
-                    :background "#21252b"    ; Slightly darker than standard backgrounds
-                    :slant normal
-                    :weight normal))))
- 
- ;; The "Active" style for the current line
- '(line-number-current-line ((t (:foreground "#abb2bf" ; Brighter silver/white
-                                 :background "#2c313a" ; Subtle highlight
-                                 :weight bold)))))
+;; Apply 24-bit colour faces in graphical frames and in truecolor terminals.
+;; (display-color-cells) returns 16777216 when the terminal supports truecolor;
+;; ensure COLORTERM=truecolor is set in the environment for this to work.
+(when (or (display-graphic-p)
+          (>= (display-color-cells) 16777216))
+  (custom-set-faces
+   '(line-number ((t (:foreground "#5c6370"
+                      :background "#21252b"
+                      :slant normal
+                      :weight normal))))
+   '(line-number-current-line ((t (:foreground "#abb2bf"
+                                   :background "#2c313a"
+                                   :weight bold))))))
 
 ;; 3. Better Demarcation & UX
 (setq-default 

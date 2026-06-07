@@ -7,6 +7,8 @@ fi
 
 export LESS='-R'
 
+export COLORTERM=truecolor
+
 export CLICOLOR=1
 alias la='ls -lAhG'
 alias lrt='ls -lrt'
