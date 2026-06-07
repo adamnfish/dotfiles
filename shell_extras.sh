@@ -63,4 +63,6 @@ function cu {
 
 # Only load Liquid Prompt in interactive shells, not from a script or from scp
 # Also check that the file exists, since it may not be installed on non-apt distros
-[[ $- = *i* ]] && [[ -f /usr/share/liquidprompt/liquidprompt ]] && source /usr/share/liquidprompt/liquidprompt
+if [[ $- = *i* ]] && [[ -f /usr/share/liquidprompt/liquidprompt ]]; then
+  source /usr/share/liquidprompt/liquidprompt
+fi
