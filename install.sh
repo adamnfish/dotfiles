@@ -5,8 +5,8 @@
 ###
 
 if command -v apt-get &>/dev/null; then
-  apt-get update -q
-  apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
+  sudo apt-get update -q
+  sudo apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
 
   cp -r .emacs.d ~/
 else
