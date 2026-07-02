@@ -84,14 +84,16 @@ case "$MODE" in
     docker run --rm -it \
       -e "DEBIAN_FRONTEND=noninteractive" \
       "$IMAGE" \
-      bash -c "cd ~ \
-        && apt-get update -q \
-        && apt-get install -y -q git \
-        && git clone ${BRANCH:+--branch ${BRANCH} }${REPO_URL} dotfiles \
-        && pushd dotfiles \
-        && bash install.sh \
-        && popd \
-        && exec bash"
+      bash -c "apt-get update -q \
+        && apt-get install -y -q sudo git \
+        && useradd -m -s /bin/bash testuser \
+        && echo 'testuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+        && su - testuser -c 'cd ~ \
+          && git clone ${BRANCH:+--branch ${BRANCH} }${REPO_URL} dotfiles \
+          && pushd dotfiles \
+          && bash install.sh \
+          && popd \
+          && exec bash'"
     ;;
   auto)
     printf "\033[1mInstalling dotfiles...\033[0m\n"
@@ -104,13 +106,17 @@ case "$MODE" in
       "$IMAGE" \
       bash -s <<'SCRIPT'
 set -euo pipefail
-cd ~
-# Redirect stdout to /dev/null during setup to keep check output readable.
-# Errors (stderr) are still forwarded so failures remain visible.
-printf "  apt-get update...\n" >&2
+# Set up a non-root user with sudo to match real target environments.
+printf "  creating test user...\n" >&2
 apt-get update -q >/dev/null
-printf "  apt-get install git...\n" >&2
-apt-get install -y -q git >/dev/null
+apt-get install -y -q sudo git >/dev/null
+useradd -m -s /bin/bash testuser
+echo 'testuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Write the test script so it can be executed as the non-root user.
+cat > /tmp/dotfiles-test.sh <<'TESTSCRIPT'
+set -euo pipefail
+cd ~
 printf "  cloning dotfiles...\n" >&2
 git clone -q ${DOTFILES_BRANCH:+--branch "$DOTFILES_BRANCH" }"$DOTFILES_REPO" dotfiles
 printf "  running install.sh...\n" >&2
@@ -185,6 +191,11 @@ else
   printf "\n\033[1;32mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
 fi
 [[ $FAIL -eq 0 ]]
+TESTSCRIPT
+
+# Run the test script as testuser, forwarding the environment variables.
+# Use printf %q to safely escape values for the inner shell.
+su - testuser -c "DOTFILES_REPO=$(printf %q "$DOTFILES_REPO") DOTFILES_BRANCH=$(printf %q "$DOTFILES_BRANCH") bash /tmp/dotfiles-test.sh"
 SCRIPT
     ;;
 esac
