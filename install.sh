@@ -1,12 +1,25 @@
 #!/bin/bash
 
 ###
+# Determine how to run privileged commands
+###
+
+if [[ $(id -u) -eq 0 ]]; then
+  SUDO=""
+elif command -v sudo &>/dev/null; then
+  SUDO="sudo"
+else
+  printf "Error: not running as root and sudo is not available.\n" >&2
+  exit 1
+fi
+
+###
 # install tools
 ###
 
 if command -v apt-get &>/dev/null; then
-  sudo apt-get update -q
-  sudo apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
+  $SUDO apt-get update -q
+  $SUDO apt-get install -y -q --no-install-recommends liquidprompt emacs-nox
 
   cp -r .emacs.d ~/
 else
