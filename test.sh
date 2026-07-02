@@ -194,7 +194,8 @@ fi
 TESTSCRIPT
 
 # Run the test script as testuser, forwarding the environment variables.
-su - testuser -c "DOTFILES_REPO='$DOTFILES_REPO' DOTFILES_BRANCH='$DOTFILES_BRANCH' bash /tmp/dotfiles-test.sh"
+# Use printf %q to safely escape values for the inner shell.
+su - testuser -c "DOTFILES_REPO=$(printf %q "$DOTFILES_REPO") DOTFILES_BRANCH=$(printf %q "$DOTFILES_BRANCH") bash /tmp/dotfiles-test.sh"
 SCRIPT
     ;;
 esac
