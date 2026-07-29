@@ -21,7 +21,7 @@ alias json='python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin),
 alias ml='mise list -c'
 
 function hex2rgb() {
-  hex=$1
+  local hex=$1
   printf "%d %d %d\n" 0x${hex:0:2} 0x${hex:2:2} 0x${hex:4:2}
 }
 
@@ -30,6 +30,16 @@ function rgb2hex() {
 }
 
 alias superclean='find . -name target -exec rm -r {} \;'
+
+function dsh() {
+  if [ -z "$1" ]; then
+    echo "Error: Please provide a devcontainer name."
+    echo "Usage: ds <container_name>"
+    return 1
+  fi
+  local name=$1
+  docker exec -it -u vscode "$name" bash
+}
 
 # GIT helpers
 alias gatus='git status -sb'
