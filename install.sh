@@ -28,6 +28,14 @@ fi
 
 
 ###
+# Copilot instructions
+###
+
+mkdir -p ~/.copilot/instructions
+cp .copilot/instructions/writing-style.instructions.md ~/.copilot/instructions/
+
+
+###
 # Enable tools and set up aliases
 ###
 
