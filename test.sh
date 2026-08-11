@@ -185,6 +185,12 @@ else
   check "emacs config is installed" "fail"
 fi
 
+if [[ -f ~/.copilot/instructions/writing-style.instructions.md ]]; then
+  check "copilot instructions are installed" "pass"
+else
+  check "copilot instructions are installed" "fail"
+fi
+
 if [[ $FAIL -gt 0 ]]; then
   printf "\n\033[1;31mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
 else
