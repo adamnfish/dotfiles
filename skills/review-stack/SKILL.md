@@ -1,16 +1,20 @@
 ---
 name: review-stack
-description: Commit working-tree changes and push them so the user can review the diff on GitHub, then later raise PRs from the reviewed branches. Handles a stack of dependent branches, with a diff link for each branch against its parent plus one for the whole change against the default branch. Use when the user asks to "commit this and push it so I can review the diff", asks for diff URLs, or asks to raise a PR or PRs from branches.
+description: Run with a step argument. `push` commits working-tree changes and pushes them so the user can review the diff on GitHub, giving a diff link for each branch in a stack of dependent branches plus one for the whole change. `pr` raises or updates PRs for the reviewed branches, with a stack list in each description.
+argument-hint: "push | pr"
+disable-model-invocation: true
 ---
 
 # Review stack
 
-This workflow has two stages. Work out from the request which one the user wants:
+The text after the skill name says which step to do, for example `/review-stack push`:
 
-1. **Push for review**: commit, push, and give diff links. Do not open PRs.
-2. **Raise PRs**: open PRs for branches the user has already reviewed.
+- `push`: commit, push, and give diff links. Do not open PRs.
+- `pr`: raise or update PRs for branches the user has already reviewed.
 
-Both stages work on a *stack*: a chain of branches where each branch is based on the one below it and the bottom branch is based on the default branch. A single branch off the default branch is a stack of one.
+Do only the step that was given. If no step was given, or it is not `push` or `pr`, ask the user which step they want before doing anything.
+
+Both steps work on a *stack*: a chain of branches where each branch is based on the one below it and the bottom branch is based on the default branch. A single branch off the default branch is a stack of one.
 
 ## Find the repo and the stack
 
@@ -27,7 +31,7 @@ If the log shows commits that no branch name points to, or a lower branch's PR w
 
 Commit messages and PR descriptions follow the user's writing style instructions. The dotfiles installer (adamnfish/dotfiles) puts them in `~/.claude/rules/writing-style.md` for Claude Code and `~/.copilot/instructions/writing-style.instructions.md` for GitHub Copilot CLI, and both tools load them automatically. If they are not already loaded, read whichever of those files exists before writing.
 
-## Stage 1: push for review
+## `push`: push for review
 
 1. Never push to the default branch. Changes always go on a feature branch based on the default branch, so that the diff shows only the change. If `HEAD` is on the default branch, create a new branch first, named after the change. When branching from the remote default branch, use `git switch -c <branch> --no-track origin/<default>`, because a branch that tracks `origin/<default>` would push to the default branch with a plain `git push`.
 2. Read `git status` and `git diff`. Stage only the files that belong to this change, by name. If anything unrelated is in the working tree, leave it out and mention it.
@@ -48,7 +52,7 @@ Whole change compared with main:
 https://github.com/owner/repo/compare/main...season
 ```
 
-## Stage 2: raise PRs
+## `pr`: raise PRs
 
 1. **Check the branches are ready.** If there are uncommitted changes, stop and ask. Make sure every branch in the stack is pushed and up to date with its remote (`git status -sb`).
 2. **Check for existing PRs.** Run `gh pr list --head <branch> --state all --json number,url,state,baseRefName` for each branch. Update an existing open PR rather than opening a second one.
