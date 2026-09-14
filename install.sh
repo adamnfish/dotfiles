@@ -28,11 +28,14 @@ fi
 
 
 ###
-# Copilot instructions
+# Writing style instructions, for GitHub Copilot CLI and Claude Code
 ###
 
 mkdir -p ~/.copilot/instructions
 cp .copilot/instructions/writing-style.instructions.md ~/.copilot/instructions/
+
+mkdir -p ~/.claude/rules
+cp .copilot/instructions/writing-style.instructions.md ~/.claude/rules/writing-style.md
 
 
 ###

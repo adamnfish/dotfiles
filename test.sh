@@ -191,6 +191,12 @@ else
   check "copilot instructions are installed" "fail"
 fi
 
+if [[ -f ~/.claude/rules/writing-style.md ]]; then
+  check "claude writing style rules are installed" "pass"
+else
+  check "claude writing style rules are installed" "fail"
+fi
+
 if [[ $FAIL -gt 0 ]]; then
   printf "\n\033[1;31mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
 else
