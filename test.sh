@@ -197,6 +197,14 @@ else
   check "claude writing style rules are installed" "fail"
 fi
 
+for skills_dir in ~/.claude/skills ~/.copilot/skills; do
+  if [[ -f "$skills_dir/review-stack/SKILL.md" ]]; then
+    check "review-stack skill is installed in $skills_dir" "pass"
+  else
+    check "review-stack skill is installed in $skills_dir" "fail"
+  fi
+done
+
 if [[ $FAIL -gt 0 ]]; then
   printf "\n\033[1;31mResults: %d passed, %d failed\033[0m\n" "$PASS" "$FAIL"
 else

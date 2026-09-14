@@ -39,6 +39,16 @@ cp .copilot/instructions/writing-style.instructions.md ~/.claude/rules/writing-s
 
 
 ###
+# Agent skills, for Claude Code (~/.claude/skills) and GitHub Copilot CLI (~/.copilot/skills)
+###
+
+for skills_dir in ~/.claude/skills ~/.copilot/skills; do
+  mkdir -p "$skills_dir"
+  cp -r skills/. "$skills_dir"/
+done
+
+
+###
 # Enable tools and set up aliases
 ###
 
