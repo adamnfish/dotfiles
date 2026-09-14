@@ -25,28 +25,13 @@ If the log shows commits that no branch name points to, or a lower branch's PR w
 
 ## Writing style
 
-Commit messages and PR descriptions follow this style guide, which comes from the user's dotfiles (`.copilot/instructions/writing-style.instructions.md` in adamnfish/dotfiles):
-
-- Speak plainly and simply, avoiding rhetorical tricks and flowery language.
-- Describe only what is there, not the decisions that were rejected.
-- Let the code speak for itself, and provide extra context only where future colleagues will need it.
-- Code comments should only contain information that lasts as long as the code. Discussion of a change belongs alongside the change, in its commit message and PR description.
-
-Plain writing does not mean short sentences. Write connected prose, where related facts are joined into sentences of ordinary length and linking words such as "because", "so", "which" and "when" show how one point leads to the next. Avoid runs of clipped sentences and sentence fragments, which read as jarring and disjointed. A paragraph should read smoothly when spoken aloud.
-
-For example, this is too clipped:
-
-> Adds season detection. Reads bootstrap data. Errors on mismatch. New command to move cache.
-
-This says the same thing plainly, in connected sentences:
-
-> The cache's season now comes from its bootstrap data, and commands that write to the cache stop with an error when new data is from a different season. A new `lig season start-new-season` command moves the old season's data aside so the next season can start with an empty cache.
+Commit messages and PR descriptions follow the user's writing style instructions. The dotfiles installer (adamnfish/dotfiles) puts them in `~/.claude/rules/writing-style.md` for Claude Code and `~/.copilot/instructions/writing-style.instructions.md` for GitHub Copilot CLI, and both tools load them automatically. If they are not already loaded, read whichever of those files exists before writing.
 
 ## Stage 1: push for review
 
 1. Never push to the default branch. Changes always go on a feature branch based on the default branch, so that the diff shows only the change. If `HEAD` is on the default branch, create a new branch first, named after the change. When branching from the remote default branch, use `git switch -c <branch> --no-track origin/<default>`, because a branch that tracks `origin/<default>` would push to the default branch with a plain `git push`.
 2. Read `git status` and `git diff`. Stage only the files that belong to this change, by name. If anything unrelated is in the working tree, leave it out and mention it.
-3. Commit, following the writing style above. Write the message as a pyramid, with a sharp title, a short prose summary below it, and optionally a little more context. The message should explain the diff rather than repeat it. Also follow any attribution rules from the session or the repo.
+3. Commit, following the writing style instructions. Write the message as a pyramid, with a sharp title, a short prose summary below it, and optionally a little more context. The message should explain the diff rather than repeat it. Also follow any attribution rules from the session or the repo.
 4. Push the branch with `git push -u origin <branch>`. Push any lower branches in the stack that have unpushed commits too.
 5. Give the diff links. Compare URLs have the form `https://github.com/<owner>/<repo>/compare/<base>...<head>`.
    - One link per branch, compared with its parent, from the bottom of the stack to the top.
@@ -77,7 +62,7 @@ https://github.com/owner/repo/compare/main...season
 
 ### PR body
 
-Follow the writing style above.
+Follow the writing style instructions.
 
 Every PR in a stack of more than one has two parts, separated by a divider:
 
