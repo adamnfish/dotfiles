@@ -68,6 +68,8 @@ https://github.com/owner/repo/compare/main...season
 
 Follow the writing style instructions.
 
+Do not wrap paragraphs by hand. Each paragraph is a single line, however long, and GitHub wraps it for the reader. Blank lines still separate paragraphs, and list items, headings and dividers keep their own lines as usual.
+
 Every PR in a stack of more than one has two parts, separated by a divider:
 
 1. A self-contained description of this PR: what it changes and why, readable without opening the other PRs. It may say which PR it builds on.
